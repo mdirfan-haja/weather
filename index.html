@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <title>Document</title>
+
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <!--
+    <div class="weather-container">
+        <img class="icon">
+        <p class="weather"></p>
+        <p class="temp"></p>
+    </div>
+-->
+    <div class="weather-container">
+        <div id="app" class="weather-container">
+            <p class="weather">Weather {{weather}}</p>
+            <img class="icon" :src="imgSrc">
+            <p class="temp"> {{temp}}</p>
+            <p class="city"> {{city}}</p>
+            <button v-on:click="clickhere" type="button">click here!</button>
+        </div>
+
+</body>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            weather: null,
+            city: null,
+            temp: null,
+            randomNumber: 0,
+            imgSrc: null,
+            cities: ["Birmingham", "London", "New York", "York", "Leeds"]
+        },
+        methods: {
+            clickhere: function() {
+                var self = this;
+                self.getRandomInteger(0, 5);
+                self.city = self.cities[self.randomNumber];
+
+                $.getJSON("http://api.openweathermap.org/data/2.5/weather?q=" + self.city + "&APPID=85a1341a3190f51f161d3fd6b2f4cb3a", function(data) {
+
+                    self.weather = data.weather[0].main
+                    self.temp = Math.floor(data.main.temp);
+                    self.imgSrc = 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png';
+                });
+            },
+            getRandomInteger: function(min, max) {
+                var self = this;
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                self.randomNumber = Math.floor(Math.random() * (max - min)) + min;
+            }
+        },
+        created() {
+            this.clickhere();
+        }
+    })
+</script>
+
+
+</html>
